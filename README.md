@@ -7,12 +7,13 @@ This module creates a new VM by cloning the specified template.
 * The VM settings are copied from the template
 * The disk is set to Thin Provisioned and cannot be changed
 * The VM Template must have a single interface. IP address and port-group specified as input are configured on that first interface
+* If there is no need to deply the VM on a specific host, set this attribute to _null_
 
 ## Usage
 
 ```hcl
 module "test-vm" {
-  source             = "github.com/adealdag/terraform-aci-access-interface"
+  source             = "github.com/adealdag/terraform-vsphere-vm-from-template"
 
   vsphere_dc         = "DC1"
   vsphere_ds         = "DS1"
