@@ -56,7 +56,7 @@ resource "vsphere_virtual_machine" "vm" {
   }
 
   network_interface {
-    network_id   = data.vsphere_network.vm_mgmt_portgroup
+    network_id   = data.vsphere_network.vm_mgmt_portgroup.id
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[1]
   }
 

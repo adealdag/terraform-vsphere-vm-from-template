@@ -57,5 +57,6 @@ variable "vm_mgmt_portgroup" {
 variable "vm_tags" {
   type        = list(string)
   description = "Tags to be configured in the VM"
+  default     = []
 }
 
