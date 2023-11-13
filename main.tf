@@ -9,18 +9,23 @@ data "vsphere_datastore" "vsphere_ds" {
 
 data "vsphere_host" "host" {
   count = var.host != null ? 1 : 0
-  
+
   name          = var.host
   datacenter_id = data.vsphere_datacenter.vsphere_dc.id
 }
 
 data "vsphere_compute_cluster" "cluster" {
   name          = var.cluster
-  datacenter_id = "${data.vsphere_datacenter.vsphere_dc.id}"
+  datacenter_id = data.vsphere_datacenter.vsphere_dc.id
 }
 
 data "vsphere_network" "vm_portgroup" {
-  name            = var.vm_portgroup
+  name          = var.vm_portgroup
+  datacenter_id = data.vsphere_datacenter.vsphere_dc.id
+}
+
+data "vsphere_network" "vm_mgmt_portgroup" {
+  name          = var.vm_mgmt_portgroup
   datacenter_id = data.vsphere_datacenter.vsphere_dc.id
 }
 
@@ -43,9 +48,16 @@ resource "vsphere_virtual_machine" "vm" {
 
   scsi_type = data.vsphere_virtual_machine.template.scsi_type
 
+  tags = var.vm_tags
+
   network_interface {
     network_id   = data.vsphere_network.vm_portgroup.id
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
+  }
+
+  network_interface {
+    network_id   = data.vsphere_network.vm_mgmt_portgroup
+    adapter_type = data.vsphere_virtual_machine.template.network_interface_types[1]
   }
 
   disk {
@@ -73,3 +85,25 @@ resource "vsphere_virtual_machine" "vm" {
     }
   }
 }
+
+# resource "null_resource" "remote-exec-provisioner" {
+#   triggers = {
+#     vm_ip    = vsphere_virtual_machine.vm.default_ip_address
+#     username = var.vm_username
+#     passwd   = var.vm_password
+#   }
+
+#   provisioner "remote-exec" {
+#     inline = [var.provision_cmd]
+#     connection {
+#       type     = "ssh"
+#       user     = self.triggers.username
+#       password = self.triggers.passwd
+#       host     = self.triggers.vm_ip
+#     }
+#   }
+
+#   depends_on = [
+#     vsphere_virtual_machine.vm
+#   ]
+# }
