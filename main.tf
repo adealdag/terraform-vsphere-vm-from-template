@@ -81,6 +81,8 @@ resource "vsphere_virtual_machine" "vm" {
         ipv4_netmask = var.vm_network_mask
       }
 
+      network_interface {}
+
       ipv4_gateway = var.vm_network_gateway
     }
   }
