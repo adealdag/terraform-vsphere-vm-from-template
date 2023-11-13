@@ -85,25 +85,3 @@ resource "vsphere_virtual_machine" "vm" {
     }
   }
 }
-
-# resource "null_resource" "remote-exec-provisioner" {
-#   triggers = {
-#     vm_ip    = vsphere_virtual_machine.vm.default_ip_address
-#     username = var.vm_username
-#     passwd   = var.vm_password
-#   }
-
-#   provisioner "remote-exec" {
-#     inline = [var.provision_cmd]
-#     connection {
-#       type     = "ssh"
-#       user     = self.triggers.username
-#       password = self.triggers.passwd
-#       host     = self.triggers.vm_ip
-#     }
-#   }
-
-#   depends_on = [
-#     vsphere_virtual_machine.vm
-#   ]
-# }
