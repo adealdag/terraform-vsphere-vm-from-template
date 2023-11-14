@@ -42,8 +42,8 @@ resource "vsphere_virtual_machine" "vm" {
   host_system_id   = var.host != null ? data.vsphere_host.host[0].id : null
   datastore_id     = data.vsphere_datastore.vsphere_ds.id
 
-  num_cpus = 2
-  memory   = 2048
+  num_cpus = var.vm_cpu
+  memory   = var.vm_mem
   guest_id = data.vsphere_virtual_machine.template.guest_id
 
   scsi_type = data.vsphere_virtual_machine.template.scsi_type
@@ -86,4 +86,36 @@ resource "vsphere_virtual_machine" "vm" {
       ipv4_gateway = var.vm_network_gateway
     }
   }
+}
+
+resource "null_resource" "provision_vm" {
+
+  connection {
+    type     = "ssh"
+    user     = var.vm_username
+    password = var.vm_password
+    host     = "10.50.3.43"
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/../../data/02-application/ansible/inventory-filter-group.vmware.yml"
+    destination = "/tmp/inventory-filter-group.vmware.yml"
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/../../data/02-application/ansible/online-boutique.yml"
+    destination = "/tmp/online-boutique.yml"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "cd /tmp",
+      "export ANSIBLE_HOST_KEY_CHECKING=False",
+      "ansible-playbook -i inventory-filter-group.vmware.yml online-boutique.yml"
+    ]
+  }
+
+  depends_on = [
+    module.vm
+  ]
 }

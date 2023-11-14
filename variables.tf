@@ -60,3 +60,12 @@ variable "vm_tags" {
   default     = []
 }
 
+variable "vm_cpu" {
+  description = "Number of CPUs"
+  default     = 2
+}
+
+variable "vm_mem" {
+  description = "RAM Memory in MB"
+  default     = 2048
+}
