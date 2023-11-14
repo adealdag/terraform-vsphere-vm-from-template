@@ -87,35 +87,3 @@ resource "vsphere_virtual_machine" "vm" {
     }
   }
 }
-
-resource "null_resource" "provision_vm" {
-
-  connection {
-    type     = "ssh"
-    user     = var.vm_username
-    password = var.vm_password
-    host     = "10.50.3.43"
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../data/02-application/ansible/inventory-filter-group.vmware.yml"
-    destination = "/tmp/inventory-filter-group.vmware.yml"
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../data/02-application/ansible/online-boutique.yml"
-    destination = "/tmp/online-boutique.yml"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "cd /tmp",
-      "export ANSIBLE_HOST_KEY_CHECKING=False",
-      "ansible-playbook -i inventory-filter-group.vmware.yml online-boutique.yml"
-    ]
-  }
-
-  depends_on = [
-    module.vm
-  ]
-}
