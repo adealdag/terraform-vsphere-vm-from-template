@@ -48,6 +48,8 @@ resource "vsphere_virtual_machine" "vm" {
 
   scsi_type = data.vsphere_virtual_machine.template.scsi_type
 
+  firmware = data.vsphere_virtual_machine.template.firmware
+
   tags = var.vm_tags
 
   network_interface {
