@@ -107,6 +107,7 @@ resource "vsphere_virtual_machine" "vm" {
   provisioner "remote-exec" {
     inline = [
       "rc-service networking restart",
+      "sleep 10"
     ]
   }
 }
