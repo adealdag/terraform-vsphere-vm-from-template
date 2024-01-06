@@ -73,11 +73,15 @@ resource "vsphere_virtual_machine" "vm" {
     template_uuid = data.vsphere_virtual_machine.template.id
   }
 
+
+  ignored_guest_ips           = ["169.254.0.0/16"]
+  wait_for_guest_net_routable = false
+
   connection {
     type             = "ssh"
     user             = var.vm_username
     password         = var.vm_password
-    host             = self.guest_ip_addresses
+    host             = [for ip in self.guest_ip_addresses : ip if !strcontains(ip, "169.254.")][0]
     bastion_host     = var.bastion_ip
     bastion_user     = var.bastion_username
     bastion_password = var.bastion_password
@@ -87,6 +91,22 @@ resource "vsphere_virtual_machine" "vm" {
     inline = [
       "echo ${var.vm_name} > /etc/hostname",
       "hostname -F /etc/hostname",
+    ]
+  }
+
+  provisioner "file" {
+    content     = <<EOT
+    iface eth0 inet static
+      address ${var.vm_network_ip}
+      netmask ${var.vm_network_mask}
+      gateway ${var.vm_network_gateway}
+    EOT
+    destination = "/etc/network/interfaces.d/eth0"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "rc-service networking restart",
     ]
   }
 }
