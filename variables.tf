@@ -69,3 +69,28 @@ variable "vm_mem" {
   description = "RAM Memory in MB"
   default     = 2048
 }
+
+variable "vm_username" {
+  description = "Username to be used to configure the VM"
+  default     = "root"
+}
+
+variable "vm_password" {
+  description = "Password to be used to configure the VM"
+  sensitive   = true
+}
+
+variable "bastion_ip" {
+  description = "IP address of the bastion host"
+  default     = null
+}
+
+variable "bastion_username" {
+  description = "Username to be used to connect to the bastion host"
+  default     = "root"
+}
+
+variable "bastion_password" {
+  description = "Password to be used to connect to the bastion host"
+  sensitive   = true
+}

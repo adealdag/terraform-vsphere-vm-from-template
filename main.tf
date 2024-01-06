@@ -71,21 +71,22 @@ resource "vsphere_virtual_machine" "vm" {
 
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
+  }
 
-    customize {
-      linux_options {
-        host_name = var.vm_name
-        domain    = var.vm_domain
-      }
+  connection {
+    type             = "ssh"
+    user             = var.vm_username
+    password         = var.vm_password
+    host             = self.guest_ip_addresses
+    bastion_host     = var.bastion_ip
+    bastion_user     = var.bastion_username
+    bastion_password = var.bastion_password
+  }
 
-      network_interface {
-        ipv4_address = var.vm_network_ip
-        ipv4_netmask = var.vm_network_mask
-      }
-
-      network_interface {}
-
-      ipv4_gateway = var.vm_network_gateway
-    }
+  provisioner "remote-exec" {
+    inline = [
+      "echo ${var.vm_name} > /etc/hostname",
+      "hostname -F /etc/hostname",
+    ]
   }
 }
