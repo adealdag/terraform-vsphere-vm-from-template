@@ -97,6 +97,7 @@ resource "vsphere_virtual_machine" "vm" {
   provisioner "file" {
     content     = <<EOT
     iface eth0 inet static
+      mtu ${var.vm_network_mtu}
       address ${var.vm_network_ip}
       netmask ${var.vm_network_mask}
       gateway ${var.vm_network_gateway}

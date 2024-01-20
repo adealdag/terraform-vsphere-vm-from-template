@@ -44,6 +44,11 @@ variable "vm_network_gateway" {
   description = "Default gateway to be configured in VM network settings"
 }
 
+variable "vm_network_mtu" {
+  description = "Network interface MTU to be configured in the VM"
+  default     = 1500
+}
+
 variable "vm_portgroup" {
   description = "Port Group where the VM interface will be connected. By default, quarantine will be used"
   default     = "quarantine"
