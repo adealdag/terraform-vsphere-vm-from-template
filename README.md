@@ -27,5 +27,8 @@ module "test-vm" {
   vm_network_mask    = 24
   vm_network_gateway = "192.168.1.1"
   vm_portgroup       = join("|", regex("uni/tn-([^/]+)/ap-([^/]+)/epg-([^/]+)", aci_application_epg.my_epg.id))
+  vm_mgmt_portgroup  = "vm_mgmt"
+  vm_cpu             = 2
+  vm_mem             = 4096
 }
 ```
