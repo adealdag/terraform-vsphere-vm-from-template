@@ -15,6 +15,8 @@ data "vsphere_host" "host" {
 }
 
 data "vsphere_compute_cluster" "cluster" {
+  count = var.cluster != null ? 1 : 0
+
   name          = var.cluster
   datacenter_id = data.vsphere_datacenter.vsphere_dc.id
 }
