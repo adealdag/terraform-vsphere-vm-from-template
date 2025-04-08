@@ -40,7 +40,7 @@ data "vsphere_virtual_machine" "template" {
 resource "vsphere_virtual_machine" "vm" {
   name             = var.vm_name
   folder           = var.vm_folder
-  resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
+  resource_pool_id = var.cluster != null ? data.vsphere_compute_cluster.cluster[0].resource_pool_id : null
   host_system_id   = var.host != null ? data.vsphere_host.host[0].id : null
   datastore_id     = data.vsphere_datastore.vsphere_ds.id
 
