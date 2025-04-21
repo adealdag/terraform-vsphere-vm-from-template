@@ -113,4 +113,11 @@ resource "vsphere_virtual_machine" "vm" {
       "sleep 10"
     ]
   }
+
+  lifecycle {
+    ignore_changes = [
+      ept_rvi_mode,
+      hv_mode
+    ]
+  }
 }
