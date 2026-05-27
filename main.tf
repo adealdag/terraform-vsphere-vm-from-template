@@ -109,7 +109,7 @@ resource "vsphere_virtual_machine" "vm" {
 
   provisioner "remote-exec" {
     inline = [
-      "rc-service networking restart",
+      "ifdown eth0 && ifup eth0",
       "sleep 10"
     ]
   }
